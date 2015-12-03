@@ -139,39 +139,41 @@ public class App extends JFrame {
         Ly2.setSize(40, 20);
         MainDialog.add(Ly2);
 
-        Buildbutton.setLocation(127, 180);
-        Buildbutton.setSize(120, 50);
-        MainDialog.add(Buildbutton);
-        er = new JLabel("");
-        er.setLocation(10, 210);
-        er.setSize(170, 20);
-        MainDialog.add(er);
-        MainDialog.setVisible(true);
+ Buildbutton.setLocation(127, 180); //Я сажусь в такси, открываю окно - dfgdfg
+        Buildbutton.setSize(120, 50);      //Лёгкий ветер моё обдувает dfgdfg лицо.
+        MainDialog.add(Buildbutton);     //Путь-дорога, шоссе, я знаю всё - dfgdfg
+        er = new JLabel("");           //Сколько улиц, домов, переулков ещё. dfgdfg
+        
+        er.setLocation(10, 210);      //Пролетаю мимо прохожих людей, dfgdfg
+        er.setSize(170, 20);         //Магазинов, витрин, знакомых парней. dfgdfg
+        MainDialog.add(er);           //Любимый мотив срывается с уст dfgdfg
+        MainDialog.setVisible(true); //"Европы Плюс". dfgdfg
+        
         Window.setResizable(false);
 
-        Buildbutton.addActionListener(new ActionListener() {
+         Buildbutton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PlotsData data = new PlotsData();
                 data.function = Tf.getText();
-                if (!data.function.equals("")) {
+                if (!data.function.equals("")) {           //би би такси
                     set("");
                     data.x1 = Double.parseDouble(Tx1.getText());
                     data.x2 = Double.parseDouble(Tx2.getText());
-                    try {
+                    try {                                  //би би би би
                         if (data.x1 < data.x2) {
                             set("");
                             data.y1 = Double.parseDouble(Ty1.getText());
                             data.y2 = Double.parseDouble(Ty2.getText());
-                            try {
+                            try {                         //это реп и стиль мс
                                 if (data.y1 < data.y2) {
                                     set("");
-                                    try {
+                                    try {                 //би би такси
                                         plotscollection.addElement(data);
                                         Accept++;
                                     } catch (Exception w3) {
                                         System.out.println(w3);
-                                    }
-                                } else {
+                                    }   
+                                } else {                 //би би би би
                                     set("Ошибка");
                                 }
 
@@ -196,23 +198,13 @@ public class App extends JFrame {
                     RefineryUtilities.centerFrameOnScreen(demo);
                     demo.setVisible(true);
 
-                }
-
-            }
-        });
-    }
+                }                //это реп
+            }                 //и стиль
+        });                    //М
+    }                          //С
 
     public void set(String s) {
         er.setText(s);
     }
 
 }
-
-/* public static void main(String[] args) {
- javax.swing.SwingUtilities.invokeLater(new Runnable() {
- public void run() {
- createAndShowGUI();
- }
- });
- }
- **/
