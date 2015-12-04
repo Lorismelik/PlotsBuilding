@@ -21,9 +21,6 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.VerticalAlignment;
 
 public class Plotcr extends ApplicationFrame {
-
-    static XYSeriesCollection col = new XYSeriesCollection();
-
     private static JFreeChart createChart(XYDataset xyDataset, ArrayList PlotSeries) {
 
         NumberAxis domainAxis = new NumberAxis("x");
@@ -35,10 +32,10 @@ public class Plotcr extends ApplicationFrame {
         XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
         int start = 0;
         for (int j = 0; j < PlotSeries.size(); j++) {
-            for (int i = start; i < (int) PlotSeries.get(j) - 1; i++) {
-                Color s = new Color(j + 2000);
+            for (int i = start; i < (int) PlotSeries.get(j); i++) {
+                Color s = new Color(j + 1000);
                 renderer.setSeriesPaint(i, s);
-
+                renderer.setSeriesVisibleInLegend(i, false);
                 renderer.setSeriesVisibleInLegend(start, true);
 
             }
@@ -58,27 +55,27 @@ public class Plotcr extends ApplicationFrame {
 
     public Plotcr(String title, Vector plotscollection, int Accept, double y1, double y2) {
         super(title);
-        ArrayList<Integer> PlotSeries = new ArrayList<>();
-        for (int i = 0; i < Accept; i++) {
-            int SeriesCount = 0;
-            boolean end = false;
-            PlotsData plotdata = (PlotsData) plotscollection.get(i);
-
-            while (end == false) {
-                end = plotdata.createDataset(SeriesCount + i, end);
-                SeriesCount++;
-            }
-            PlotSeries.add(SeriesCount);
-
-        }
-
-        XYDataset xydataset = col;
-        JFreeChart chart = createChart(xydataset, PlotSeries);
-        ChartPanel chartPanel = new ChartPanel(chart);
+        
+        ChartPanel chartPanel = new ChartPanel(fillCollection(plotscollection, Accept));
         chartPanel.setPreferredSize(new Dimension(450, 450));
         JScrollPane sp = new JScrollPane(chartPanel);
         sp.setPreferredSize(new Dimension(500, 500));
         setContentPane(sp);
     }
+    
+    public JFreeChart fillCollection ( Vector plotscollection,int Accept)
+            {
+                XYSeriesCollection col = new XYSeriesCollection();
+                ArrayList<Integer> PlotSeries = new ArrayList<>();
+                int SeriesCount = 0;
+                for (int i = 0; i < Accept; i++) {
+                    PlotsData plotdata = (PlotsData) plotscollection.get(i);
+                    col=plotdata.createPlotdataset(i, col);
+                    PlotSeries.add(col.getSeriesCount() - SeriesCount);
+                    SeriesCount = col.getSeriesCount();
+                }
+                JFreeChart chart = createChart(col, PlotSeries);
+                return chart;
+            }
 
 }

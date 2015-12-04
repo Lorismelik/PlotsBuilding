@@ -6,15 +6,17 @@ import java.awt.event.*;
 import java.util.Vector;
 import org.jfree.ui.RefineryUtilities;
 
-/**
- *
- * @author РўРёРјСѓСЂ
- */
+
 public class App extends JFrame {
 
-    public static void main(String[] args) {
-        App j = new App();
-    }
+    public static void main(String args[]){
+        SwingUtilities.invokeLater(new Runnable () {
+            @Override
+            public void run() {
+                new App();
+            }
+        });
+  }           
     TextField Count;
     TextField Tf;
     TextField Tx1;
@@ -26,6 +28,7 @@ public class App extends JFrame {
     JPanel SetCount;
     JButton Buildbutton;
     JButton AcceptCount;
+    JLabel Lfx;
     JLabel er;
     int Accept = 0;
     Vector plotscollection = new Vector();
@@ -35,7 +38,6 @@ public class App extends JFrame {
         Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         RefineryUtilities.centerFrameOnScreen(Window);
         SetCount = new JPanel();
-        Window.setResizable(false);
         Window.add(SetCount);
         SetCount.setBackground(Color.white);
         SetCount.setLayout(null);
@@ -85,7 +87,7 @@ public class App extends JFrame {
         Ty1 = new TextField("", 40);
         Ty2 = new TextField("", 40);
 
-        Tf.setLocation(100, 60);
+        Tf.setLocation(110, 60);
         Tf.setSize(200, 20);
 
         Tx1.setLocation(110, 100);
@@ -109,7 +111,7 @@ public class App extends JFrame {
         MainDialog.add(Tf);
 
         JLabel Lf = new JLabel("Введите функцию:");
-        JLabel Lfx = new JLabel("F(x) =");
+        Lfx = new JLabel("1. F(x) =");
         JLabel Lx1 = new JLabel("x1:");
         JLabel Lx2 = new JLabel("x2:");
         JLabel Ly1 = new JLabel("y1:");
@@ -120,7 +122,7 @@ public class App extends JFrame {
         MainDialog.add(Lf);
 
         Lfx.setLocation(60, 60);
-        Lfx.setSize(40, 20);
+        Lfx.setSize(50, 20);
         MainDialog.add(Lfx);
 
         Lx1.setLocation(60, 100);
@@ -153,66 +155,32 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 PlotsData data = new PlotsData();
                 data.function = Tf.getText();
-                if (!data.function.equals("")) {
-                    set("");
-                    data.x1 = Double.parseDouble(Tx1.getText());
-                    data.x2 = Double.parseDouble(Tx2.getText());
-                    try {
-                        if (data.x1 < data.x2) {
-                            set("");
-                            data.y1 = Double.parseDouble(Ty1.getText());
-                            data.y2 = Double.parseDouble(Ty2.getText());
-                            try {
-                                if (data.y1 < data.y2) {
-                                    set("");
+                data.x1 = Double.parseDouble(Tx1.getText());
+                data.x2 = Double.parseDouble(Tx2.getText());
+                data.y1 = Double.parseDouble(Ty1.getText());
+                data.y2 = Double.parseDouble(Ty2.getText());
+                if (data.x1>data.x2||data.y1>data.y2||data.function.equals(""))
+                throw new IllegalArgumentException("Некорректный ввод"); 
                                     try {
                                         plotscollection.addElement(data);
                                         Accept++;
-                                    } catch (Exception w3) {
-                                        System.out.println(w3);
-                                    }
-                                } else {
-                                    set("Ошибка");
-                                }
-
-                            } catch (Exception w1) {
-                                set("Ошибка‹");
-                            }
-                        } else {
-                            set("Ошибка");
-                        }
-
-                    } catch (Exception w2) {
-                        set("Ошибка‹");
-                    }
-                } else {
-                    set("Ошибка");
-                }
-
-                if (Accept >= Integer.parseInt(Count.getText())) {
+                                    } catch (Exception w3) {} 
+                Tf.setText("");
+                Lfx.setText(Integer.toString(Accept+1)+". F(x) =");
+                Tx1.setEnabled(false);
+                Tx2.setEnabled(false);
+                Ty1.setEnabled(false);
+                Ty2.setEnabled(false); 
+                if (Accept >= Integer.parseInt(Count.getText())){
                     Window.setVisible(false);
                     Plotcr demo = new Plotcr("", plotscollection, Accept, data.y1, data.y2);
                     demo.pack();
                     RefineryUtilities.centerFrameOnScreen(demo);
                     demo.setVisible(true);
-
                 }
-
             }
         });
     }
 
-    public void set(String s) {
-        er.setText(s);
-    }
 
 }
-
-/* public static void main(String[] args) {
- javax.swing.SwingUtilities.invokeLater(new Runnable() {
- public void run() {
- createAndShowGUI();
- }
- });
- }
- **/

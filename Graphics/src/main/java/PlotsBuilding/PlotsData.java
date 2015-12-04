@@ -1,9 +1,10 @@
 package PlotsBuilding;
 
-import static PlotsBuilding.Plotcr.col;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import java.util.Optional;
 
 public class PlotsData {
 
@@ -12,7 +13,7 @@ public class PlotsData {
     double x2;
     double y1;
     double y2;
-
+    boolean end = false;
     public PlotsData() {
 
     }
@@ -23,11 +24,27 @@ public class PlotsData {
         this.y1 = c;
         this.y2 = d;
     }
+    
+    public XYSeriesCollection createPlotdataset(int Accept, XYSeriesCollection col)
+    { 
+        Optional<XYSeries> a = Optional.ofNullable(null);
+        int i = 1;
+        while (end == false)
+        {
+           a = createDataset(i); 
+            if(a.isPresent()==true)
+        {
+            XYSeries s = a.get();
+            s.setKey(Integer.toString(Accept+i)+". "+function);
+            i++;
+            col.addSeries(s);
+        }   
+        }  
+        return col;
+    }
 
-    public boolean createDataset(int Accept, boolean end) {
-        XYSeries series;
-
-        series = new XYSeries(Integer.toString(Accept + 1) + " " + function);
+    public Optional createDataset(int Accept) {
+        XYSeries series = new XYSeries(Double.toString(x1 + 1) + " " + function);
         double j = Math.abs(x1);
         double l = Math.abs(x2);
         if (j < 1) {
@@ -36,34 +53,35 @@ public class PlotsData {
         if (l < 1) {
             l = Math.pow(l, l);
         }
+        Expression parser = new ExpressionBuilder(function)
+                    .variables("x")
+                    .build();
         double step = (Math.abs(x1) + Math.abs(x2)) / ((j + l) * 200);
         for (double i = x1; i <= x2; i += step) {
-            Expression parser = new ExpressionBuilder(function)
-                    .variables("x")
-                    .build()
-                    .setVariable("x", i);
+            parser.setVariable("x", i);
             double result = 0;
             double lastresult = 0;
             try {
                 result = parser.evaluate();
             } catch (Exception e) {
             }
-            if (Math.abs(result) < Math.abs(8 * 100000) & Math.abs(Math.abs(result) - Math.abs(lastresult)) < Math.abs(Math.abs(y1) + Math.abs(y2))) {
+            if ((Math.abs(Math.abs(result) - Math.abs(lastresult)) < Math.abs(Math.abs(y1) + Math.abs(y2)/2))&(result<y2)&(result>y1)) {
                 series.add(i, result);
                 lastresult = result;
             } else {
-                if (Math.abs(Math.abs(i) - Math.abs(x1)) >= step) {
-                    col.addSeries(series);
-                }
                 x1 = i + step;
-                end = false;
-                return end;
+                if (series.getItemCount()<2)
+                { series = null; }
+                Optional<XYSeries> a = Optional.ofNullable(series);
+                return a;
             }
 
         }
-        col.addSeries(series);
-        end = true;
-        return end;
+        end =true;
+        if (series.getItemCount()<2)
+                { series = null; }
+        Optional<XYSeries> a = Optional.ofNullable(series);
+        return a;
     }
 
 }
