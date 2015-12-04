@@ -21,13 +21,13 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.VerticalAlignment;
 
 public class Plotcr extends ApplicationFrame {
-    private static JFreeChart createChart(XYDataset xyDataset, ArrayList PlotSeries) {
+    private static JFreeChart createChart(XYDataset xyDataset, ArrayList PlotSeries,  double y1, double y2) {
 
         NumberAxis domainAxis = new NumberAxis("x");
         domainAxis.setAutoRangeIncludesZero(false);
         domainAxis.setPositiveArrowVisible(true);
         NumberAxis rangeAxis = new NumberAxis("y");
-        rangeAxis.setRange(-10, 10);
+        rangeAxis.setRange(y1, y2);
         rangeAxis.setPositiveArrowVisible(true);
         XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
         int start = 0;
@@ -53,7 +53,7 @@ public class Plotcr extends ApplicationFrame {
         return chart;
     }
 
-    public Plotcr(String title, Vector plotscollection, int Accept, double y1, double y2) {
+    public Plotcr(String title, Vector plotscollection, int Accept) {
         super(title);
         
         ChartPanel chartPanel = new ChartPanel(fillCollection(plotscollection, Accept));
@@ -68,13 +68,16 @@ public class Plotcr extends ApplicationFrame {
                 XYSeriesCollection col = new XYSeriesCollection();
                 ArrayList<Integer> PlotSeries = new ArrayList<>();
                 int SeriesCount = 0;
+                PlotsData plotdata = new PlotsData();
                 for (int i = 0; i < Accept; i++) {
-                    PlotsData plotdata = (PlotsData) plotscollection.get(i);
+                    plotdata = (PlotsData) plotscollection.get(i);
                     col=plotdata.createPlotdataset(i, col);
                     PlotSeries.add(col.getSeriesCount() - SeriesCount);
                     SeriesCount = col.getSeriesCount();
                 }
-                JFreeChart chart = createChart(col, PlotSeries);
+                double y1 = plotdata.y1;
+                double y2 = plotdata.y2;
+                JFreeChart chart = createChart(col, PlotSeries, y1,  y2);
                 return chart;
             }
 

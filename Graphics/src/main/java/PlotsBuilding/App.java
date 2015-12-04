@@ -173,7 +173,7 @@ public class App extends JFrame {
                 Ty2.setEnabled(false); 
                 if (Accept >= Integer.parseInt(Count.getText())){
                     Window.setVisible(false);
-                    Plotcr demo = new Plotcr("", plotscollection, Accept, data.y1, data.y2);
+                    Plotcr demo = new Plotcr("", plotscollection, Accept);
                     demo.pack();
                     RefineryUtilities.centerFrameOnScreen(demo);
                     demo.setVisible(true);
