@@ -18,11 +18,12 @@ public class PlotsData {
 
     }
 
-    public PlotsData(double a, double b, double c, double d) {
+    public PlotsData(double a, double b, double c, double d, String func ) {
         this.x1 = a;
         this.x2 = b;
         this.y1 = c;
         this.y2 = d;
+        this.function = func;
     }
     
     public XYSeriesCollection createPlotdataset(int Accept, XYSeriesCollection col)
