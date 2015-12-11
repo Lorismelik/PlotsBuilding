@@ -16,3 +16,4 @@ public class Plotcr extends ApplicationFrame {
         getContentPane().add(chartPanel);
     }
 }
+
