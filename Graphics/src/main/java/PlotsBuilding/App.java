@@ -3,6 +3,7 @@ package PlotsBuilding;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import org.jfree.ui.RefineryUtilities;
 
@@ -31,8 +32,6 @@ public class App extends JFrame {
     JLabel Lfx;
     JLabel er;
     int Accept = 0;
-    Vector plotscollection = new Vector();
-
     public App() {
         Window = new JFrame();
         Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -150,6 +149,7 @@ public class App extends JFrame {
         MainDialog.add(er);
         MainDialog.setVisible(true);
         Window.setResizable(false);
+         ArrayList<PlotsData> plotscollection = new ArrayList<PlotsData>();
 
         Buildbutton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -162,7 +162,7 @@ public class App extends JFrame {
                 if (data.x1>data.x2||data.y1>data.y2||data.function.equals(""))
                 throw new IllegalArgumentException("Некорректный ввод"); 
                                     try {
-                                        plotscollection.addElement(data);
+                                        plotscollection.add(data);
                                         Accept++;
                                     } catch (Exception w3) {} 
                 Tf.setText("");
@@ -171,9 +171,14 @@ public class App extends JFrame {
                 Tx2.setEnabled(false);
                 Ty1.setEnabled(false);
                 Ty2.setEnabled(false); 
+                ArrayList <Double> points = new ArrayList<Double>();
+                points.add(data.x1);
+                points.add(data.x2);
+                points.add(data.y1);
+                points.add(data.y2);
                 if (Accept >= Integer.parseInt(Count.getText())){
                     Window.setVisible(false);
-                    Plotcr demo = new Plotcr("", plotscollection, Accept);
+                    Plotcr demo = new Plotcr("", plotscollection, Accept, points);
                     demo.pack();
                     RefineryUtilities.centerFrameOnScreen(demo);
                     demo.setVisible(true);

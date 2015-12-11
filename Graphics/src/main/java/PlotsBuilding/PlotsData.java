@@ -6,7 +6,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import java.util.Optional;
 
-public class PlotsData {
+public class PlotsData implements Cloneable {
 
     String function = "";
     double x1;
@@ -32,7 +32,7 @@ public class PlotsData {
         int i = 1;
         while (end == false)
         {
-           a = createDataset(i); 
+           a = createDataset(); 
             if(a.isPresent()==true)
         {
             XYSeries s = a.get();
@@ -44,7 +44,7 @@ public class PlotsData {
         return col;
     }
 
-    public Optional createDataset(int Accept) {
+    public Optional createDataset() {
         XYSeries series = new XYSeries(Double.toString(x1 + 1) + " " + function);
         double j = Math.abs(x1);
         double l = Math.abs(x2);
@@ -66,7 +66,7 @@ public class PlotsData {
                 result = parser.evaluate();
             } catch (Exception e) {
             }
-            if ((Math.abs(Math.abs(result) - Math.abs(lastresult)) < Math.abs(Math.abs(y1) + Math.abs(y2)/2))&(result<y2)&(result>y1)) {
+            if ((Math.abs(Math.abs(result) - Math.abs(lastresult)) < Math.abs(Math.abs(y1) + Math.abs(y2)))&(result<y2)&(result>y1)) {
                 series.add(i, result);
                 lastresult = result;
             } else {

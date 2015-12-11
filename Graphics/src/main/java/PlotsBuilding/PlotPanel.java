@@ -25,10 +25,10 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.VerticalAlignment;
 
 
-public final class PlotPanel extends JPanel {
+public  class PlotPanel extends JPanel {
     
     ChartPanel chartPanel;
-    public PlotPanel (Vector plotscollection, int Accept)
+    public PlotPanel (ArrayList<PlotsData> plotscollection, int Accept)
     {
         chartPanel = new ChartPanel(fillCollection(plotscollection, Accept));
         chartPanel.setPreferredSize(new Dimension(800, 450));
@@ -37,13 +37,13 @@ public final class PlotPanel extends JPanel {
         add(chartPanel);
     }
     
-    public JFreeChart fillCollection ( Vector plotscollection,int Accept)
+    public JFreeChart fillCollection ( ArrayList<PlotsData> plotscollection,int Accept)
             {
                 XYSeriesCollection col = new XYSeriesCollection();
                 ArrayList<Integer> PlotSeries = new ArrayList<>();
                 int SeriesCount = 0;
                 PlotsData plotdata = new PlotsData();
-                for (int i = 0; i < Accept; i++) {
+                for (int i = 0; i < plotscollection.size(); i++) {
                     plotdata = (PlotsData) plotscollection.get(i);
                     col=plotdata.createPlotdataset(i, col);
                     PlotSeries.add(col.getSeriesCount() - SeriesCount);
@@ -52,6 +52,9 @@ public final class PlotPanel extends JPanel {
                 double y1 = plotdata.y1;
                 double y2 = plotdata.y2;
                 JFreeChart chart = createChart(col, PlotSeries, y1,  y2);
+                plotdata = null;
+                PlotSeries = null;
+                col = null;
                 return chart;
             }
     private JFreeChart createChart(XYDataset xyDataset, ArrayList PlotSeries,  double y1, double y2) {
@@ -83,16 +86,21 @@ public final class PlotPanel extends JPanel {
         chart.setBackgroundPaint(Color.white);
         chart.getLegend().setPosition(RectangleEdge.RIGHT);
         chart.getLegend().setVerticalAlignment(VerticalAlignment.TOP);
+        xyDataset = null;
+        renderer = null;
+        plot = null;
         return chart;
     }
     
-     public void updateChart ( Vector plotscollection,int Accept)
+     public void updateChart ( ArrayList<PlotsData> plotscollection,int Accept)
      {
+        remove(chartPanel);
         chartPanel = new ChartPanel(fillCollection(plotscollection, Accept));
         chartPanel.setPreferredSize(new Dimension(800, 450));
-        chartPanel.setBackground(Color.WHITE);    
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(chartPanel);       
+        chartPanel.setBackground(Color.WHITE);
+        add(chartPanel);
+        repaint();
+        validate();
      }
     
 }

@@ -7,9 +7,8 @@ package PlotsBuilding;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,7 +18,7 @@ public class DataPanel  extends JPanel {
     JTextField functionText;
     
  
-    public  DataPanel(Vector plotscollection, int Accept, PlotPanel plotPanel) {
+    public  DataPanel(ArrayList<PlotsData> plotscollection, int Accept, PlotPanel plotPanel, ArrayList <Double> points) {
                 setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setPreferredSize(new Dimension(800, 50));
 		setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -32,7 +31,7 @@ public class DataPanel  extends JPanel {
                 functionList.setEditable(false);
                 functionList.setPreferredSize(new Dimension(400, 130));
                 PlotsData plotdata = new PlotsData();
-                for (int i = 0; i < Accept; i++) {
+                for (int i = 0; i < plotscollection.size(); i++) {
                     plotdata = (PlotsData) plotscollection.get(i);
                     functionList.addItem(plotdata.function);
                 }
@@ -55,20 +54,22 @@ public class DataPanel  extends JPanel {
                          {
                               if (e.getActionCommand().equals("Перестроить"))
                               {
-                              String functionNotation = functionText.getText().trim();
-                              for (int i =0; i <Accept; i++)
-                                    {
-                                        PlotsData plotsData = new PlotsData(-10,10,-10,10,functionNotation);
-                                        plotscollection.add(i, plotsData);    
-                                    }
-                              plotPanel.updateChart(plotscollection, Accept);
-                              functionList.removeAllItems();
-                              PlotsData plotdata = new PlotsData();
-                              for (int i = 0; i < Accept; i++) {
-                              plotdata = (PlotsData) plotscollection.get(i);
-                              functionList.addItem(plotdata.function);
+                              int changedItem =functionList.getSelectedIndex();
+                              PlotsData plotsData = new PlotsData();
+                              plotsData.x1 = points.get(0);
+                              plotsData.x2 = points.get(1);
+                              plotsData.y1 = points.get(2);
+                              plotsData.y2 = points.get(3);
+                              plotsData.function = functionText.getText().trim();
+                              functionList.removeItemAt(changedItem);
+                              functionList.addItem(plotsData.function);
+                              plotscollection.clear();
+                              for (int i = 0; i<Accept; i++)
+                              {
+                                  plotsData.function=(String)functionList.getItemAt(i);
+                                  plotscollection.add(plotsData);      
                               }
-                              
+                              plotPanel.updateChart(plotscollection, Accept);
                               }
                          }
                          
