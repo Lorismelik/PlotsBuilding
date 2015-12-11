@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 public class DataPanel  extends JPanel {
     private static final Font font = new Font("Calibri", Font.BOLD + Font.ITALIC, 16);
     JTextField functionText;
+    int funcCount = 1;
     
  
     public  DataPanel(ArrayList<PlotsData> plotscollection, int Accept, PlotPanel plotPanel, ArrayList <Double> points) {
@@ -27,16 +28,12 @@ public class DataPanel  extends JPanel {
 		fNlabel.setFont(font);          
 		add(fNlabel);
                 
-                JComboBox functionList = new JComboBox();
-                functionList.setEditable(false);
-                functionList.setPreferredSize(new Dimension(400, 130));
-                PlotsData plotdata = new PlotsData();
-                for (int i = 0; i < plotscollection.size(); i++) {
-                    plotdata = (PlotsData) plotscollection.get(i);
-                    functionList.addItem(plotdata.function);
-                }
-                add(functionList);
-		
+                PlotsData plotsData1 = new PlotsData();
+                plotsData1 = (PlotsData) plotscollection.get(0);
+                JLabel func = new JLabel(Integer.toString(funcCount)+") f(x)="+plotsData1.function);
+                func.setPreferredSize(new Dimension(100, 50));
+		func.setFont(font);          
+		add(func);		
 		functionText = new JTextField("",15);
 		functionText.setFont(font);
 		functionText.setBackground(Color.WHITE);
@@ -54,22 +51,24 @@ public class DataPanel  extends JPanel {
                          {
                               if (e.getActionCommand().equals("Перестроить"))
                               {
-                              int changedItem =functionList.getSelectedIndex();
+                      
                               PlotsData plotsData = new PlotsData();
                               plotsData.x1 = points.get(0);
                               plotsData.x2 = points.get(1);
                               plotsData.y1 = points.get(2);
                               plotsData.y2 = points.get(3);
                               plotsData.function = functionText.getText().trim();
-                              functionList.removeItemAt(changedItem);
-                              functionList.addItem(plotsData.function);
-                              plotscollection.clear();
-                              for (int i = 0; i<Accept; i++)
+                              plotscollection.set(funcCount-1, plotsData);
+                              if (funcCount<plotscollection.size())
                               {
-                                  plotsData.function=(String)functionList.getItemAt(i);
-                                  plotscollection.add(plotsData);      
+                              plotsData = (PlotsData) plotscollection.get(funcCount);
+                              funcCount++;
+                              func.setText(Integer.toString(funcCount)+") f(x)="+plotsData.function+"   ");
                               }
-                              plotPanel.updateChart(plotscollection, Accept);
+                              else
+                              {
+                                     plotPanel.updateChart(plotscollection, Accept);
+                              }
                               }
                          }
                          
