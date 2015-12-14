@@ -38,25 +38,22 @@ public class App extends JFrame {
         SetCount = new JPanel();
         Window.add(SetCount);
         SetCount.setBackground(Color.white);
-        SetCount.setLayout(null);
+        SetCount.setLayout(new GridBagLayout());
+        
         AcceptCount = new JButton("Принять");
         Window.setTitle("");
         Window.setSize(323, 200);
         Count = new TextField("", 40);
-        Count.setLocation(97, 90);
-        Count.setSize(90, 20);
-        JLabel co = new JLabel("Введите количество графиков");
-        JLabel Hello = new JLabel("Здравствуйте, Вас приветствует Графикатор-3000");
-        Hello.setLocation(13, 20);
-        Hello.setSize(300, 20);
-        co.setLocation(60, 55);
-        co.setSize(300, 20);
-        AcceptCount.setLocation(93, 120);
-        AcceptCount.setSize(100, 30);
-        SetCount.add(AcceptCount);
-        SetCount.add(co);
-        SetCount.add(Hello);
-        SetCount.add(Count);
+
+        SetCount.add(new JLabel("Здравствуйте, Вас приветствует Никудышный программист") , new GridBagConstraints(       0,0,2,1,1,1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,new Insets(5,5,1,1),2,0));
+        SetCount.add(new JLabel("Введите количество графиков") , new GridBagConstraints(          1,0,1,1,1,1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,new Insets(5,5,1,5),0,0));
+        SetCount.add(Count , new GridBagConstraints(       1,1,1,1,1,1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,new Insets(5,1,1,1),0,0));
+        SetCount.add(AcceptCount , new GridBagConstraints( 2,0,2,1,1,1, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,new Insets(5,1,5,1),2,0));
+        
+        
+        
+        
+        
         SetCount.setVisible(true);
         Window.setVisible(true);
         AcceptCount.addActionListener(new ActionListener() {
