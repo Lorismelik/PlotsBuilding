@@ -9,17 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Vector;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class DataPanel  extends JPanel {
     private static final Font font = new Font("Calibri", Font.BOLD + Font.ITALIC, 16);
     JTextField functionText;
-    int funcCount = 1;
     
  
-    public  DataPanel(ArrayList<PlotsData> plotscollection, int Accept, PlotPanel plotPanel, ArrayList <Double> points) {
+    public  DataPanel(ArrayList<PlotsData> plotscollection, PlotPanel plotPanel, ArrayList <Double> points) {
+                PlotPanel plotPanel1 = plotPanel;
+                ArrayList<PlotsData> plotscollection1 = plotscollection;
                 setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setPreferredSize(new Dimension(800, 50));
 		setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -28,12 +28,16 @@ public class DataPanel  extends JPanel {
 		fNlabel.setFont(font);          
 		add(fNlabel);
                 
-                PlotsData plotsData1 = new PlotsData();
-                plotsData1 = (PlotsData) plotscollection.get(0);
-                JLabel func = new JLabel(Integer.toString(funcCount)+") f(x)="+plotsData1.function);
-                func.setPreferredSize(new Dimension(100, 50));
-		func.setFont(font);          
-		add(func);		
+                JComboBox functionList = new JComboBox();
+                functionList.setEditable(false);
+                functionList.setPreferredSize(new Dimension(400, 130));
+                PlotsData plotdata = new PlotsData();
+                for (int i = 0; i < plotscollection1.size(); i++) {
+                    plotdata =  plotscollection1.get(i);
+                    functionList.addItem(plotdata.function);
+                }
+                add(functionList);
+		
 		functionText = new JTextField("",15);
 		functionText.setFont(font);
 		functionText.setBackground(Color.WHITE);
@@ -41,35 +45,89 @@ public class DataPanel  extends JPanel {
                 
                 JButton button = new JButton();
                 button.setFont(font);
-                button.setText("Перестроить");
+                button.setText("Редактировать");
                 add(button);
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, button.getWidth()));
+                
+                 
+                JButton button1 = new JButton();
+                button1.setFont(font);
+                button1.setText("Добавить");
+                add(button1);
+		setMaximumSize(new Dimension(Integer.MAX_VALUE, button1.getWidth()));
+                 
+                JButton button2 = new JButton();
+                button2.setFont(font);
+                button2.setText("Удалить");
+                add(button2);
+		setMaximumSize(new Dimension(Integer.MAX_VALUE, button2.getWidth()));
+                
+                
+                
                 
                 button.addActionListener(new ActionListener()
                 {
 			 public void actionPerformed(ActionEvent e)
                          {
-                              if (e.getActionCommand().equals("Перестроить"))
+                              if (e.getSource().equals(button))
                               {
-                      
+                              int changedItem =functionList.getSelectedIndex(); 
                               PlotsData plotsData = new PlotsData();
                               plotsData.x1 = points.get(0);
                               plotsData.x2 = points.get(1);
                               plotsData.y1 = points.get(2);
                               plotsData.y2 = points.get(3);
                               plotsData.function = functionText.getText().trim();
-                              plotscollection.set(funcCount-1, plotsData);
-                              if (funcCount<plotscollection.size())
-                              {
-                              plotsData = (PlotsData) plotscollection.get(funcCount);
-                              funcCount++;
-                              func.setText(Integer.toString(funcCount)+") f(x)="+plotsData.function+"   ");
+                              functionList.removeItemAt(changedItem);
+                              functionList.addItem(plotsData.function);
+                              plotscollection1.set(changedItem,plotsData);
+                              functionList.removeAllItems();
+                                for (int i = 0; i< plotscollection1.size(); i++)
+                                {
+                                    plotsData = plotscollection1.get(i);
+                                    functionList.addItem(plotsData.function);
+                                }
+                              plotPanel1.updateChart(plotscollection1);
                               }
-                              else
-                              {
-                                     plotPanel.updateChart(plotscollection, Accept);
-                              }
-                              }
+                           
+                         }
+                         
+			
+               });
+                
+                 
+                button1.addActionListener(new ActionListener()
+                {
+			 public void actionPerformed(ActionEvent e)
+                         {
+                                if (e.getSource().equals(button1))
+                                {
+                                   PlotsData plotsData = new PlotsData();
+                                   plotsData.x1 = points.get(0);
+                                   plotsData.x2 = points.get(1);
+                                   plotsData.y1 = points.get(2);
+                                   plotsData.y2 = points.get(3);
+                                   plotsData.function = functionText.getText().trim();
+                                   functionList.addItem(plotsData.function);
+                                   plotscollection1.add(plotsData);
+                                   plotPanel1.updateChart(plotscollection1);
+                                }   
+                         }
+                         
+			
+               });
+                
+                 button2.addActionListener(new ActionListener()
+                {
+			 public void actionPerformed(ActionEvent e)
+                         {
+                                if (e.getSource().equals(button2))
+                                {
+                                    int changedItem =functionList.getSelectedIndex();
+                                    functionList.removeItemAt(changedItem);
+                                    plotscollection1.remove(changedItem);
+                                    plotPanel1.updateChart(plotscollection1);
+                                }   
                          }
                          
 			

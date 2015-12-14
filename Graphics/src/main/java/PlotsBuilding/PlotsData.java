@@ -15,7 +15,7 @@ public class PlotsData implements Cloneable {
     double y2;
     boolean end = false;
     public PlotsData() {
-
+    boolean end = false;
     }
 
     public PlotsData(double a, double b, double c, double d, String func ) {
@@ -26,8 +26,9 @@ public class PlotsData implements Cloneable {
         this.function = func;
     }
     
-    public XYSeriesCollection createPlotdataset(int Accept, XYSeriesCollection col)
+    public XYSeriesCollection createPlotdataset(int number, XYSeriesCollection col)
     { 
+        double oldx1=x1;
         Optional<XYSeries> a = Optional.ofNullable(null);
         int i = 1;
         while (end == false)
@@ -36,11 +37,13 @@ public class PlotsData implements Cloneable {
             if(a.isPresent()==true)
         {
             XYSeries s = a.get();
-            s.setKey(Integer.toString(Accept+i)+". "+function);
+            s.setKey(Integer.toString(number+i)+". "+function);
             i++;
             col.addSeries(s);
         }   
-        }  
+        } 
+        end = false;
+        x1 = oldx1;
         return col;
     }
 
@@ -57,7 +60,7 @@ public class PlotsData implements Cloneable {
         Expression parser = new ExpressionBuilder(function)
                     .variables("x")
                     .build();
-        double step = (Math.abs(x1) + Math.abs(x2)) / ((j + l) * 200);
+        double step = (Math.abs(x1) + Math.abs(x2)) / ((j + l) * 2000);
         for (double i = x1; i <= x2; i += step) {
             parser.setVariable("x", i);
             double result = 0;

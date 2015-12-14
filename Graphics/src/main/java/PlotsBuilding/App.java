@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Vector;
 import org.jfree.ui.RefineryUtilities;
 
 
@@ -70,10 +69,6 @@ public class App extends JFrame {
 
     public void dialogwindow() {
         MainDialog = new JPanel();
-        Vector collect = new Vector();
-        JCheckBox box = new JCheckBox();
-        collect.addElement(box);
-        JCheckBox box1 = (JCheckBox) collect.get(0);
         Window.add(MainDialog);
         MainDialog.setBackground(Color.white);
         MainDialog.setLayout(null);
@@ -150,7 +145,6 @@ public class App extends JFrame {
         MainDialog.setVisible(true);
         Window.setResizable(false);
          ArrayList<PlotsData> plotscollection = new ArrayList<PlotsData>();
-
         Buildbutton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PlotsData data = new PlotsData();
@@ -170,7 +164,7 @@ public class App extends JFrame {
                 Tx1.setEnabled(false);
                 Tx2.setEnabled(false);
                 Ty1.setEnabled(false);
-                Ty2.setEnabled(false); 
+                Ty2.setEnabled(false);
                 ArrayList <Double> points = new ArrayList<Double>();
                 points.add(data.x1);
                 points.add(data.x2);
@@ -178,7 +172,7 @@ public class App extends JFrame {
                 points.add(data.y2);
                 if (Accept >= Integer.parseInt(Count.getText())){
                     Window.setVisible(false);
-                    Plotcr demo = new Plotcr("", plotscollection, Accept, points);
+                    Plotcr demo = new Plotcr("", plotscollection, points);
                     demo.pack();
                     RefineryUtilities.centerFrameOnScreen(demo);
                     demo.setVisible(true);
