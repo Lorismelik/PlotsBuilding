@@ -37,7 +37,7 @@ public class PlotsData implements Cloneable {
             if(a.isPresent()==true)
         {
             XYSeries s = a.get();
-            s.setKey(Integer.toString(number+i)+". "+function);
+            s.setKey(Integer.toString(number+1)+". " + Integer.toString(i)+ "  "+function);
             i++;
             col.addSeries(s);
         }   

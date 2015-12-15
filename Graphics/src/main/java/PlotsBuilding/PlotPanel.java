@@ -19,6 +19,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.VerticalAlignment;
@@ -30,11 +31,11 @@ public  class PlotPanel extends JPanel implements Cloneable {
     public PlotPanel (ArrayList<PlotsData> plotscollection, Plotcr frame)
     {
        
-        chartPanel = new ChartPanel(fillCollection(plotscollection));
-        chartPanel.setPreferredSize(new Dimension(800, 450));
-        chartPanel.setBackground(Color.WHITE);    
+        this.chartPanel = new ChartPanel(fillCollection(plotscollection));
+        this.chartPanel.setPreferredSize(new Dimension(800, 450));
+        this.chartPanel.setBackground(Color.WHITE);    
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(chartPanel);
+        add(this.chartPanel);
     }
     
     public JFreeChart fillCollection ( ArrayList<PlotsData> plotscollection)
@@ -43,6 +44,14 @@ public  class PlotPanel extends JPanel implements Cloneable {
                 ArrayList<Integer> PlotSeries = new ArrayList<>();
                 int SeriesCount = 0;
                 PlotsData plotdata = new PlotsData();
+                if (plotscollection.isEmpty())
+                {
+                    XYSeries series = new XYSeries("1.");
+                    series.add(0, 0);
+                    plotdata.y1=-10;
+                    plotdata.y2=10;
+                    col.addSeries(series);
+                }
                 for (int i = 0; i < plotscollection.size(); i++) {
                     plotdata = (PlotsData) plotscollection.get(i);
                     col=plotdata.createPlotdataset(i, col);
@@ -64,15 +73,16 @@ public  class PlotPanel extends JPanel implements Cloneable {
         rangeAxis.setPositiveArrowVisible(true);
         XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
         int start = 0;
+        int color = 500;
         for (int j = 0; j < PlotSeries.size(); j++) {
-            for (int i = start; i < (int) PlotSeries.get(j); i++) {
-                Color s = new Color(j + 1000);
+            for (int i = start; i < start+(int) PlotSeries.get(j); i++) {
+                Color s = new Color(color);
                 renderer.setSeriesPaint(i, s);
                 renderer.setSeriesVisibleInLegend(i, false);
                 renderer.setSeriesVisibleInLegend(start, true);
-
             }
-            start = (int) PlotSeries.get(j);
+           start = start+(int) PlotSeries.get(j);
+           color *=8;
         }
         renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
         XYPlot plot = new XYPlot(xyDataset, domainAxis, rangeAxis, renderer);
@@ -89,11 +99,11 @@ public  class PlotPanel extends JPanel implements Cloneable {
      public void updateChart ( ArrayList<PlotsData> plotscollection)
      {
         ArrayList<PlotsData> plotscollection1 = plotscollection;
-        remove(chartPanel);
-        chartPanel = new ChartPanel(fillCollection(plotscollection1));
-        chartPanel.setPreferredSize(new Dimension(800, 450));
-        chartPanel.setBackground(Color.WHITE);
-        add(chartPanel);
+        remove(this.chartPanel);
+        this.chartPanel = new ChartPanel(fillCollection(plotscollection1));
+        this.chartPanel.setPreferredSize(new Dimension(800, 450));
+        this.chartPanel.setBackground(Color.WHITE);
+        add(this.chartPanel);
         repaint();
         validate();
      }

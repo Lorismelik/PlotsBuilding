@@ -11,6 +11,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class DataPanel  extends JPanel {
     private static final Font font = new Font("Calibri", Font.BOLD + Font.ITALIC, 16);
@@ -78,6 +80,7 @@ public class DataPanel  extends JPanel {
                               plotsData.y1 = points.get(2);
                               plotsData.y2 = points.get(3);
                               plotsData.function = functionText.getText().trim();
+                              if (!Checkfunc(plotsData.function)) return;
                               functionList.removeItemAt(changedItem);
                               functionList.addItem(plotsData.function);
                               plotscollection1.set(changedItem,plotsData);
@@ -108,6 +111,7 @@ public class DataPanel  extends JPanel {
                                    plotsData.y1 = points.get(2);
                                    plotsData.y2 = points.get(3);
                                    plotsData.function = functionText.getText().trim();
+                                   if (!Checkfunc(plotsData.function)) return;
                                    functionList.addItem(plotsData.function);
                                    plotscollection1.add(plotsData);
                                    plotPanel1.updateChart(plotscollection1);
@@ -131,10 +135,19 @@ public class DataPanel  extends JPanel {
                          }
                          
 			
-               });
-
-
-		
+               });	
     }
+    public boolean Checkfunc (String s)
+               {
+                   try
+                    {
+                         Expression parser = new ExpressionBuilder(s)
+                        .variables("x")
+                        .build();
+                        parser.setVariable("x", 1);
+                        double result = parser.evaluate();
+                    }  catch (IllegalArgumentException w4) { JOptionPane.showMessageDialog(null, " При вводе функции допущена ошибка");  return false;}
+                return true;
+               }
     
 }
