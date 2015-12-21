@@ -34,7 +34,7 @@ public class App extends JFrame {
         Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         RefineryUtilities.centerFrameOnScreen(Window);
         Window.setTitle("");
-        Window.setSize(323, 200);
+        Window.setSize(400, 200);
         Window.pack();
         Window.setVisible(true);
         dialogwindow();
@@ -90,7 +90,7 @@ public class App extends JFrame {
                 data.y1 = Double.parseDouble(Ty1.getText(). trim());
                 data.y2 = Double.parseDouble(Ty2.getText(). trim());  
                 } catch (NumberFormatException w2) {JOptionPane.showMessageDialog(null, " Введите числа для построения графика в нужном интервале");  return;}
-                if (data.x1>data.x2||data.y1>data.y2||data.function.equals(""))
+                if (data.x1>=data.x2||data.y1>=data.y2||data.function.equals(""))
                 {
                      JOptionPane.showMessageDialog(null, " Неверно заполнены условия для построения графика");
                      return;
@@ -103,19 +103,16 @@ public class App extends JFrame {
                 double result = parser.evaluate();
                 }  catch (IllegalArgumentException w4) { JOptionPane.showMessageDialog(null, " При вводе функции допущена ошибка");  return;
                 }
+                catch (ArithmeticException w5) { JOptionPane.showMessageDialog(null, " Невозможно построить график при прямом делении на 0");  return;}
                 
                 try {
                 plotscollection.add(data);
                 } catch (Exception w3) {} 
                 
-                ArrayList <Double> points = new ArrayList<Double>();
-                points.add(data.x1);
-                points.add(data.x2);
-                points.add(data.y1);
-                points.add(data.y2);
+              
                 Window.setVisible(false);
                 
-                Plotcr demo = new Plotcr("", plotscollection, points);
+                Plotcr demo = new Plotcr("PlotsBuilder", plotscollection);
                 demo.pack();
                 RefineryUtilities.centerFrameOnScreen(demo);
                 demo.setVisible(true);

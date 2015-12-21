@@ -1,10 +1,12 @@
 package PlotsBuilding;
 
+import java.util.ArrayList;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import java.util.Optional;
+import com.rits.cloning.Cloner;
 
 public class PlotsData implements Cloneable {
 
@@ -16,16 +18,7 @@ public class PlotsData implements Cloneable {
     boolean end = false;
     public PlotsData() {
     boolean end = false;
-    }
-
-    public PlotsData(double a, double b, double c, double d, String func ) {
-        this.x1 = a;
-        this.x2 = b;
-        this.y1 = c;
-        this.y2 = d;
-        this.function = func;
-    }
-    
+    }  
     public XYSeriesCollection createPlotdataset(int number, XYSeriesCollection col)
     { 
         double oldx1=x1;
@@ -34,56 +27,59 @@ public class PlotsData implements Cloneable {
         while (end == false)
         {
            a = createDataset(); 
-            if(a.isPresent()==true)
-        {
-            XYSeries s = a.get();
-            s.setKey(Integer.toString(number+1)+". " + Integer.toString(i)+ "  "+function);
-            i++;
-            col.addSeries(s);
-        }   
+            if(a.isPresent())
+            {
+                XYSeries s = a.get();
+                if (i==1)
+                {
+                    s.setKey(Integer.toString(number+1)+".  " +function);
+                }
+                else
+                {
+                    s.setKey(Integer.toString(number+1)+". "+Integer.toString(i)+" "+function);
+                }
+                i++;
+                col.addSeries(s);
+            }   
         } 
         end = false;
         x1 = oldx1;
         return col;
     }
-
-    public Optional createDataset() {
-        XYSeries series = new XYSeries(Double.toString(x1 + 1) + " " + function);
-        double j = Math.abs(x1);
-        double l = Math.abs(x2);
-        if (j < 1) {
-            j = Math.pow(j, l);
-        }
-        if (l < 1) {
-            l = Math.pow(l, l);
-        }
+    
+    @Override
+    public PlotsData clone()
+    {
+        Cloner cloner = new Cloner();
+        PlotsData clone = cloner.deepClone(this);
+        return clone;
+    }
+    private Optional createDataset() {
+        XYSeries series = new XYSeries("");
         Expression parser = new ExpressionBuilder(function)
                     .variables("x")
                     .build();
-        double step = (Math.abs(x1) + Math.abs(x2)) / ((j + l) * 2000);
-        for (double i = x1; i <= x2; i += step) {
+        double step = 0.0002;
+        for (double i = x1; i <= x2; i += step) 
+        {
             parser.setVariable("x", i);
             double result = 0;
-            double lastresult = 0;
-            try {
-                result = parser.evaluate();
-            } catch (Exception e) {
-            }
-            if ((Math.abs(Math.abs(result) - Math.abs(lastresult)) < Math.abs(Math.abs(y1) + Math.abs(y2)))&(result<y2)&(result>y1)) {
+            result = parser.evaluate();
+            if ((result<y2)&(result>y1)) {
                 series.add(i, result);
-                lastresult = result;
-            } else {
+            } 
+            else 
+            {
                 x1 = i + step;
                 if (series.getItemCount()<2)
                 { series = null; }
                 Optional<XYSeries> a = Optional.ofNullable(series);
                 return a;
             }
-
         }
         end =true;
         if (series.getItemCount()<2)
-                { series = null; }
+            { series = null; }
         Optional<XYSeries> a = Optional.ofNullable(series);
         return a;
     }

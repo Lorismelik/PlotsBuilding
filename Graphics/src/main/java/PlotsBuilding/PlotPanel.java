@@ -38,32 +38,33 @@ public  class PlotPanel extends JPanel implements Cloneable {
         add(this.chartPanel);
     }
     
-    public JFreeChart fillCollection ( ArrayList<PlotsData> plotscollection)
+    private JFreeChart fillCollection ( ArrayList<PlotsData> plotscollection)
             {
                 XYSeriesCollection col = new XYSeriesCollection();
-                ArrayList<Integer> PlotSeries = new ArrayList<>();
+                ArrayList<Integer> seriesCount = new ArrayList<>();
                 int SeriesCount = 0;
                 PlotsData plotdata = new PlotsData();
                 if (plotscollection.isEmpty())
                 {
-                    XYSeries series = new XYSeries("1.");
+                    XYSeries series = new XYSeries("1. ");
                     series.add(0, 0);
                     plotdata.y1=-10;
                     plotdata.y2=10;
                     col.addSeries(series);
                 }
-                for (int i = 0; i < plotscollection.size(); i++) {
+                for (int i = 0; i < plotscollection.size(); i++) 
+                {
                     plotdata = (PlotsData) plotscollection.get(i);
                     col=plotdata.createPlotdataset(i, col);
-                    PlotSeries.add(col.getSeriesCount() - SeriesCount);
+                    seriesCount.add(col.getSeriesCount() - SeriesCount);
                     SeriesCount = col.getSeriesCount();
                 }
                 double y1 = plotdata.y1;
                 double y2 = plotdata.y2;
-                JFreeChart chart = createChart(col, PlotSeries, y1,  y2);
+                JFreeChart chart = createChart(col, seriesCount, y1,  y2);
                 return chart;
             }
-    private JFreeChart createChart(XYDataset xyDataset, ArrayList PlotSeries,  double y1, double y2) {
+    private JFreeChart createChart(XYDataset xyDataset, ArrayList<Integer> seriesCount,  double y1, double y2) {
 
         NumberAxis domainAxis = new NumberAxis("x");
         domainAxis.setAutoRangeIncludesZero(false);
@@ -73,16 +74,16 @@ public  class PlotPanel extends JPanel implements Cloneable {
         rangeAxis.setPositiveArrowVisible(true);
         XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
         int start = 0;
-        int color = 500;
-        for (int j = 0; j < PlotSeries.size(); j++) {
-            for (int i = start; i < start+(int) PlotSeries.get(j); i++) {
+        int color = 50;
+        for (Object series : seriesCount) {
+            for (int i = start; i < start + (int) series; i++) {
                 Color s = new Color(color);
                 renderer.setSeriesPaint(i, s);
                 renderer.setSeriesVisibleInLegend(i, false);
                 renderer.setSeriesVisibleInLegend(start, true);
             }
-           start = start+(int) PlotSeries.get(j);
-           color *=8;
+            start = start + (int) series;
+            color *=100;
         }
         renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
         XYPlot plot = new XYPlot(xyDataset, domainAxis, rangeAxis, renderer);
