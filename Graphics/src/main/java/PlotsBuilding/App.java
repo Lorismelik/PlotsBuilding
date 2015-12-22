@@ -90,7 +90,7 @@ public class App extends JFrame {
                 data.y1 = Double.parseDouble(Ty1.getText(). trim());
                 data.y2 = Double.parseDouble(Ty2.getText(). trim());  
                 } catch (NumberFormatException w2) {JOptionPane.showMessageDialog(null, " Введите числа для построения графика в нужном интервале");  return;}
-                if (data.x1>=data.x2||data.y1>=data.y2||data.function.equals(""))
+                if (data.x1>=data.x2||data.y1>=data.y2)
                 {
                      JOptionPane.showMessageDialog(null, " Неверно заполнены условия для построения графика");
                      return;

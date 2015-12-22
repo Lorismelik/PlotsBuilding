@@ -5,11 +5,19 @@
  */
 package PlotsBuilding;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.geom.Point2D;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.awt.geom.Rectangle2D;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -27,15 +35,26 @@ import org.jfree.ui.VerticalAlignment;
 
 public  class PlotPanel extends JPanel implements Cloneable {
     
-    ChartPanel chartPanel;
+    private ChartPanel chartPanel;
+    private JPanel pointsPanel;
+    private JTextArea cursorInfo;
+    JFreeChart chart;
+    
     public PlotPanel (ArrayList<PlotsData> plotscollection, Plotcr frame)
     {
-       
-        this.chartPanel = new ChartPanel(fillCollection(plotscollection));
-        this.chartPanel.setPreferredSize(new Dimension(800, 450));
-        this.chartPanel.setBackground(Color.WHITE);    
+        pointsPanel = new JPanel();
+        pointsPanel.setLayout(new BoxLayout(pointsPanel, BoxLayout.X_AXIS));
+        cursorInfo = new JTextArea(2, 10);
+        cursorInfo.setVisible(true);
+        chartPanel = new ChartPanel(fillCollection(plotscollection));
+        chartPanel.addChartMouseListener(new MyChartMouseListener());
+        chartPanel.setPreferredSize(new Dimension(800, 450));
+        pointsPanel.setMaximumSize(new Dimension(chartPanel.getWidth(), 70));
+        pointsPanel.add(cursorInfo);
+        chartPanel.setBackground(Color.WHITE);    
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(this.chartPanel);
+        add(chartPanel);
+        add(pointsPanel);
     }
     
     private JFreeChart fillCollection ( ArrayList<PlotsData> plotscollection)
@@ -90,7 +109,7 @@ public  class PlotPanel extends JPanel implements Cloneable {
         PlotOrientation orientation = PlotOrientation.VERTICAL;
         plot.setOrientation(orientation);
         plot.setBackgroundPaint(Color.white);
-        JFreeChart chart = new JFreeChart(plot);
+        chart = new JFreeChart(plot);
         chart.setBackgroundPaint(Color.white);
         chart.getLegend().setPosition(RectangleEdge.RIGHT);
         chart.getLegend().setVerticalAlignment(VerticalAlignment.TOP);
@@ -100,13 +119,42 @@ public  class PlotPanel extends JPanel implements Cloneable {
      public void updateChart ( ArrayList<PlotsData> plotscollection)
      {
         ArrayList<PlotsData> plotscollection1 = plotscollection;
-        remove(this.chartPanel);
-        this.chartPanel = new ChartPanel(fillCollection(plotscollection1));
-        this.chartPanel.setPreferredSize(new Dimension(800, 450));
-        this.chartPanel.setBackground(Color.WHITE);
-        add(this.chartPanel);
+        remove(chartPanel);
+        remove(pointsPanel);
+        chartPanel = new ChartPanel(fillCollection(plotscollection1));
+        chartPanel.addChartMouseListener(new MyChartMouseListener());
+        chartPanel.setPreferredSize(new Dimension(800, 450));
+        chartPanel.setBackground(Color.WHITE);
+        pointsPanel = new JPanel();
+        pointsPanel.setLayout(new BoxLayout(pointsPanel, BoxLayout.X_AXIS));
+        cursorInfo = new JTextArea(2, 10);
+        cursorInfo.setVisible(true);
+        pointsPanel.add(cursorInfo);
+        add(chartPanel);
+        add(pointsPanel);
         repaint();
-        validate();
+        revalidate();
      }
+     
+      protected class MyChartMouseListener implements ChartMouseListener {
+        int j = 1;
+        public void chartMouseMoved (ChartMouseEvent e) {
+            cursorInfo.setText("");
+            Point2D p = chartPanel.translateScreenToJava2D(e.getTrigger().getPoint());
+            Rectangle2D plotArea = chartPanel.getScreenDataArea();
+            XYPlot plot = (XYPlot) chart.getPlot();
+            double chartY = plot.getRangeAxis().java2DToValue(p.getY(), plotArea, plot.getRangeAxisEdge());
+            double chartX = plot.getDomainAxis().java2DToValue(p.getX(), plotArea, plot.getDomainAxisEdge());
+            double newChartY = new BigDecimal(chartY).setScale(4, RoundingMode.UP).doubleValue();
+            double newChartX = new BigDecimal(chartX).setScale(4, RoundingMode.UP).doubleValue();
+            cursorInfo.append("Расположение курсора:");
+            cursorInfo.append("\n");
+            cursorInfo.append("x: "+String.valueOf(newChartX)+" ");
+            cursorInfo.append("y: "+String.valueOf(newChartY));
+        }
+        public void chartMouseClicked (ChartMouseEvent e) {
+        }
+      }
+    
     
 }

@@ -115,9 +115,18 @@ public class DataPanel  extends JPanel {
                                 if (e.getSource().equals(button1))
                                 {
                                    PlotsData plotsData = new PlotsData();
-                                   plotsData =  (PlotsData)plotscollection1.get(0);
                                    PlotsData plotsData1 = new PlotsData();
-                                   plotsData1 = plotsData.clone();
+                                   if (plotscollection1.size()>0) 
+                                   {
+                                        plotsData =  (PlotsData)plotscollection1.get(0);
+                                        plotsData1 = plotsData.clone();
+                                   } else
+                                   {
+                                       plotsData1.x1=-10;
+                                       plotsData1.x2=10;
+                                       plotsData1.y1=-10;
+                                       plotsData1.y2=10;
+                                   }
                                    plotsData1.function = functionText.getText().trim();
                                    if (!Checkfunc(plotsData1.function)) return;
                                    functionList.addItem(plotsData1.function);
