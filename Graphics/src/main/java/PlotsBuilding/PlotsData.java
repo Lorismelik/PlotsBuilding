@@ -7,6 +7,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import java.util.Optional;
 import com.rits.cloning.Cloner;
+import static java.lang.Math.abs;
 
 public class PlotsData implements Cloneable {
 
@@ -60,6 +61,10 @@ public class PlotsData implements Cloneable {
                     .variables("x")
                     .build();
         double step = 0.0002;
+        if (abs(abs(x2)-abs(x1))/step<15000)
+        {
+            step = abs(abs(x2)-abs(x1))/15000;
+        }
         for (double i = x1; i <= x2; i += step) 
         {
             parser.setVariable("x", i);
